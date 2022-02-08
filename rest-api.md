@@ -142,7 +142,7 @@ Sample Payload below:
 * **The limits on the API are based on the IPs, not the API keys.**
 
 ## Order Rate Limits
-* Every successful order response will contain a `X-MBX-ORDER-COUNT-(intervalNum)(intervalLetter)` header which has the current order count for the account for all order rate limiters defined.
+* Every successful order response will contain a `X-MBX-ORDER-COUNT-(intervalNum)(intervalLetter)` header which has the current order count for the account for all order rate limiters defined. To monitor order count usage, refer to `GET api/v3/rateLimit/order`.
 * When the order count exceeds the limit, you will receive a 429 error without the `Retry-After` header. Please check the Order Rate Limit rules using `GET api/v3/exchangeInfo` and wait for reactivation accordingly.
 * Rejected/unsuccessful orders are not guaranteed to have `X-MBX-ORDER-COUNT-**` headers in the response.
 * **The order rate limit is counted against each account**.
@@ -313,9 +313,12 @@ These terms will be used throughout the documentation, so it is recommended espe
 * AUCTION_MATCH
 * BREAK
 
-**Symbol type:**
+**Account and Symbol Permissions (permissions):**
 
 * SPOT
+* MARGIN
+* LEVERAGED
+* TRD_GRP_002
 
 **Order status (status):**
 
@@ -1061,31 +1064,36 @@ Matching Engine
       "price": "4000.00000000",
       "qty": "1.00000000",
       "commission": "4.00000000",
-      "commissionAsset": "USDT"
+      "commissionAsset": "USDT",
+      "tradeId": 56
     },
     {
       "price": "3999.00000000",
       "qty": "5.00000000",
       "commission": "19.99500000",
-      "commissionAsset": "USDT"
+      "commissionAsset": "USDT",
+      "tradeId": 57
     },
     {
       "price": "3998.00000000",
       "qty": "2.00000000",
       "commission": "7.99600000",
-      "commissionAsset": "USDT"
+      "commissionAsset": "USDT",
+      "tradeId": 58
     },
     {
       "price": "3997.00000000",
       "qty": "1.00000000",
       "commission": "3.99700000",
-      "commissionAsset": "USDT"
+      "commissionAsset": "USDT",
+      "tradeId": 59
     },
     {
       "price": "3995.00000000",
       "qty": "1.00000000",
       "commission": "3.99500000",
-      "commissionAsset": "USDT"
+      "commissionAsset": "USDT",
+      "tradeId": 60
     }
   ]
 }
@@ -2170,7 +2178,7 @@ The `MAX_POSITION` filter defines the allowed maximum position an account can ha
 
 ## Exchange Filters
 ### EXCHANGE_MAX_NUM_ORDERS
-The `MAX_NUM_ORDERS` filter defines the maximum number of orders an account is allowed to have open on the exchange.
+The `EXCHANGE_MAX_NUM_ORDERS` filter defines the maximum number of orders an account is allowed to have open on the exchange.
 Note that both "algo" orders and normal orders are counted for this filter.
 
 **/exchangeInfo format:**
@@ -2182,13 +2190,13 @@ Note that both "algo" orders and normal orders are counted for this filter.
 ```
 
 ### EXCHANGE_MAX_NUM_ALGO_ORDERS
-The `MAX_ALGO_ORDERS` filter defines the maximum number of "algo" orders an account is allowed to have open on the exchange.
+The `EXCHANGE_MAX_NUM_ALGO_ORDERS` filter defines the maximum number of "algo" orders an account is allowed to have open on the exchange.
 "Algo" orders are `STOP_LOSS`, `STOP_LOSS_LIMIT`, `TAKE_PROFIT`, and `TAKE_PROFIT_LIMIT` orders.
 
 **/exchangeInfo format:**
 ```javascript
 {
-  "filterType": "EXCHANGE_MAX_ALGO_ORDERS",
+  "filterType": "EXCHANGE_MAX_NUM_ALGO_ORDERS",
   "maxNumAlgoOrders": 200
 }
 ```

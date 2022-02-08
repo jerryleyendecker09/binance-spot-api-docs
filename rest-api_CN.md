@@ -40,7 +40,7 @@
 
 ##下单频率限制
 * 每个成功的下单回报将包含一个`X-MBX-ORDER-COUNT-(intervalNum)(intervalLetter)`的头，其中包含当前账户已用的下单限制数量。
-* 当下单数超过限制时，会收到带有429但不含`Retry-After`头的响应。请检查 `GET api/v3/exchangeInfo` 的下单频率限制 (rateLimitType = ORDERS) 并等待封禁时间结束。
+* 当下单数超过限制时，会收到带有429但不含`Retry-After`头的响应。请检查 `GET api/v3/rateLimit/order` 的下单频率限制 (rateLimitType = ORDERS) 并等待封禁时间结束。
 * 被拒绝或不成功的下单并不保证回报中包含以上头内容。
 * **下单频率限制是基于每个账户计数的。**
 
@@ -190,9 +190,12 @@ There is no & between "GTC" and "quantity=1".
 * AUCTION_MATCH 集合竞价
 * BREAK 交易暂停
 
-**交易对类型:**
+**账户与交易对权限(权限):**
 
 * SPOT 现货
+* MARGIN 杠杆
+* LEVERAGED 杠杆代币
+* TRD_GRP_002 交易组 002
 
 **订单状态 (status):**
 
@@ -892,31 +895,36 @@ Type | 强制要求的参数
       "price": "4000.00000000",
       "qty": "1.00000000",
       "commission": "4.00000000",
-      "commissionAsset": "USDT"
+      "commissionAsset": "USDT",
+      "tradeId": 56
     },
     {
       "price": "3999.00000000",
       "qty": "5.00000000",
       "commission": "19.99500000",
-      "commissionAsset": "USDT"
+      "commissionAsset": "USDT",
+      "tradeId": 57
     },
     {
       "price": "3998.00000000",
       "qty": "2.00000000",
       "commission": "7.99600000",
-      "commissionAsset": "USDT"
+      "commissionAsset": "USDT",
+      "tradeId": 58
     },
     {
       "price": "3997.00000000",
       "qty": "1.00000000",
       "commission": "3.99700000",
-      "commissionAsset": "USDT"
+      "commissionAsset": "USDT",
+      "tradeId": 59
     },
     {
       "price": "3995.00000000",
       "qty": "1.00000000",
       "commission": "3.99500000",
-      "commissionAsset": "USDT"
+      "commissionAsset": "USDT",
+      "tradeId": 60
     }
   ]
 }
@@ -1222,7 +1230,7 @@ timestamp | LONG | YES |
 ```
 ### 查询目前下单数 (TRADE)
 ```
-GET api/v3/rateLimit/order
+GET /api/v3/rateLimit/order
 ```
 获取用户在当前时间区间内的下单总数。
 
@@ -1447,7 +1455,7 @@ lots是拍卖术语，这个过滤器对订单中的`quantity`也就是数量参
 **/exchangeInfo 响应中的格式:**
 ```javascript
   {
-    "filterType": "MAX_ALGO_ORDERS",
+    "filterType": "MAX_NUM_ALGO_ORDERS",
     "maxNumAlgoOrders": 5
   }
 ```
@@ -1497,7 +1505,7 @@ lots是拍卖术语，这个过滤器对订单中的`quantity`也就是数量参
 **/exchangeInfo 响应中的格式:**
 ```javascript
   {
-    "filterType": "EXCHANGE_MAX_ALGO_ORDERS",
+    "filterType": "EXCHANGE_MAX_NUM_ALGO_ORDERS",
     "maxNumAlgoOrders": 200
   }
 ```
